@@ -1,0 +1,22 @@
+﻿<Application x:Class="ColorWars.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controller="clr-namespace:ColorWars.Controller"
+             xmlns:ccolors="clr-namespace:ColorWars.Controller.Colors"
+             xmlns:charmonizer="clr-namespace:ColorWars.Controller.ColorHarmonizer"
+             StartupUri="View/MainWindow.xaml">
+    <Application.Resources>
+        <!-- The dyes -->
+        <ccolors:DyeSet x:Key="DyeSet"/>
+        <charmonizer:Arrows x:Key="Arrows"/>
+        
+        <!-- The text searcher controller -->
+        <controller:TextSearcher x:Key="TextSearcher"/>
+
+        <!-- Images -->
+        <BitmapImage x:Key="Cloth" UriSource="View/Images/cloth.png"/>
+        <BitmapImage x:Key="Leather" UriSource="View/Images/leather.png"/>
+        <BitmapImage x:Key="Metal" UriSource="View/Images/metal.png"/>
+        <BitmapImage x:Key="About" UriSource="View/Images/about.png"/>
+    </Application.Resources>
+</Application>

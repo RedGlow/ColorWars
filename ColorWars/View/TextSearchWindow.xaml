@@ -1,0 +1,44 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ColorWars.View" x:Class="ColorWars.View.TextSearchWindow"
+        xmlns:converters="clr-namespace:ColorWars.View.Converters"
+        Title="TextSearchWindow" Height="300" Width="300" WindowStyle="None" SizeToContent="WidthAndHeight" ShowInTaskbar="False" AllowsTransparency="True" Background="Transparent">
+    <Window.Resources>
+        <converters:ExistingTextToVisibilityConverter x:Key="ExistingTextToVisibilityConverter"/>
+    </Window.Resources>
+    <Window.Visibility>
+        <Binding Converter="{StaticResource ExistingTextToVisibilityConverter}" Path="CurrentlySearchedString" Source="{StaticResource TextSearcher}"/>
+    </Window.Visibility>
+    <Grid>
+        <TextBox x:Name="MainTextBox" Width="200" Height="30" Text="{Binding CurrentlySearchedString, Mode=TwoWay, Source={StaticResource TextSearcher}, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.Background>
+                <SolidColorBrush x:Name="TextBoxBackground" Color="White"/>
+            </TextBox.Background>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup Name="TextBoxStates">
+                    <VisualState Name="Invisible">
+                        <Storyboard>
+                            <ColorAnimation
+                                    Storyboard.TargetName="TextBoxBackground"
+                                    Storyboard.TargetProperty="Color"
+                                    To="White" Duration="0:0:0"/>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState Name="Visible">
+                        <Storyboard>
+                            <ColorAnimation
+                                    Storyboard.TargetName="TextBoxBackground"
+                                    Storyboard.TargetProperty="Color"
+                                    To="Red" Duration="0:0:0.5"/>
+                            <ColorAnimation
+                                    Storyboard.TargetName="TextBoxBackground"
+                                    Storyboard.TargetProperty="Color"
+                                    To="White" Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </TextBox>
+    </Grid>
+</Window>

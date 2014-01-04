@@ -1,0 +1,266 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controller="clr-namespace:ColorWars.Controller"
+    xmlns:ccolors="clr-namespace:ColorWars.Controller.Colors"
+    xmlns:mcolorsystems="clr-namespace:ColorWars.Model.ColorSystems"
+    xmlns:local="clr-namespace:ColorWars.View"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:converters="clr-namespace:ColorWars.View.Converters"
+    xmlns:effects="clr-namespace:Effects;assembly=Effects"
+    xmlns:con="http://schemas.kent.boogaart.com/converters"
+    x:Class="ColorWars.View.MainWindow"
+    Title="Color Wars" Height="500" Width="800" WindowState="Maximized">
+    <Window.Resources>
+        <converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:NullChecker x:Key="NullChecker"/>
+        <converters:EnumMatchToBooleanConverter x:Key="EnumMatchToBooleanConverter"/>
+        <converters:ColorRGBConverter x:Key="ColorRGBConverter"/>
+
+        <!-- SortKind enum object data provider -->
+        <ObjectDataProvider MethodName="GetValues"
+            ObjectType="{x:Type sys:Enum}"
+            x:Key="SortKindValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="ccolors:SortKind" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <!-- Template to display SortKind values -->
+        <DataTemplate DataType="{x:Type ccolors:SortKind}">
+            <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}, Mode=OneWay}"/>
+        </DataTemplate>
+
+        <!-- ColorSystemKind enum object data provider -->
+        <ObjectDataProvider MethodName="GetValues"
+            ObjectType="{x:Type sys:Enum}"
+            x:Key="ColorSystemKind">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="mcolorsystems:ColorSystemKind" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <!-- Template to display ColorSystemKind values -->
+        <DataTemplate DataType="{x:Type mcolorsystems:ColorSystemKind}">
+            <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}, Mode=OneWay}"/>
+        </DataTemplate>
+
+        <!-- Template for the elements inside the grid -->
+        <DataTemplate x:Name="ColorDisplayItemTemplate" DataType="{x:Type ccolors:Dye}">
+            <Border Width="150">
+                <Grid Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Canvas Grid.Row="1" Width="50" Height="50"
+                            HorizontalAlignment="Center">
+                        <Canvas.Background>
+                            <MultiBinding Converter="{StaticResource ColorRGBConverter}" Mode="OneWay">
+                                <Binding/>
+                                <Binding Source="{StaticResource DyeSet}" Path="CurrentMaterial"/>
+                            </MultiBinding>
+                        </Canvas.Background>
+                    </Canvas>
+                    <TextBlock Grid.Row="0" Text="{Binding Name, Mode=OneWay}" HorizontalAlignment="Center"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- Style for buttons on top bar -->
+        <Style x:Key="TopBarToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Width" Value="60"/>
+        </Style>
+        <Style x:Key="TopBarButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Height" Value="50"/>
+        </Style>
+
+        <!-- Template for the panel containing all the colors -->
+        <ItemsPanelTemplate x:Key="ColorDisplayPanelTemplate">
+            <WrapPanel/>
+        </ItemsPanelTemplate>
+
+        <!-- Style for making selected items visible even when unfocused -->
+        <Style x:Key="ColorDisplayStyle" TargetType="{x:Type ListBox}">
+            <Style.Resources>
+                <!--SelectedItem with focus-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Black" Opacity=".8"/>
+                <!--SelectedItem without focus-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Black" Opacity=".8"/>
+            </Style.Resources>
+        </Style>
+
+        <!-- Animation style for selecting / deselecting colors on right side -->
+        <Style TargetType="{x:Type local:DyeDetails}">
+            <Setter Property="Opacity" Value="1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                    <Setter Property="Opacity" Value="0"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <TabControl x:Name="MainTabControl" DataContext="{Binding Source={StaticResource ColorSystemKind}}">
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock>Guild Wars 2 Colors</TextBlock>
+            </TabItem.Header>
+            <DockPanel LastChildFill="True">
+                <!-- Top menu -->
+                <StatusBar DockPanel.Dock="Top" VerticalAlignment="Top">
+                    <StatusBarItem>
+                        <ToggleButton Style="{Binding Mode=OneWay, Source={StaticResource TopBarToggleButtonStyle}}"
+                                        IsChecked="{Binding CurrentMaterial, ConverterParameter=Cloth, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay, Source={StaticResource DyeSet}}">
+                            <ToggleButton.Content>
+                                <StackPanel Orientation="Vertical">
+                                    <Image Source="{Binding Mode=OneWay, Source={StaticResource Cloth}}" Stretch="None"/>
+                                    <TextBlock>Cloth</TextBlock>
+                                </StackPanel>
+                            </ToggleButton.Content>
+                        </ToggleButton>
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <ToggleButton Style="{Binding Mode=OneWay, Source={StaticResource TopBarToggleButtonStyle}}"
+                                        IsChecked="{Binding CurrentMaterial, ConverterParameter=Leather, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay, Source={StaticResource DyeSet}}">
+                            <ToggleButton.Content>
+                                <StackPanel Orientation="Vertical">
+                                    <Image Source="{Binding Mode=OneWay, Source={StaticResource Leather}}" Stretch="None"/>
+                                    <TextBlock>Leather</TextBlock>
+                                </StackPanel>
+                            </ToggleButton.Content>
+                        </ToggleButton>
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <ToggleButton Style="{Binding Mode=OneWay, Source={StaticResource TopBarToggleButtonStyle}}"
+                                        IsChecked="{Binding CurrentMaterial, ConverterParameter=Metal, Converter={StaticResource EnumMatchToBooleanConverter}, Mode=TwoWay, Source={StaticResource DyeSet}}">
+                            <ToggleButton.Content>
+                                <StackPanel Orientation="Vertical">
+                                    <Image Source="{Binding Mode=OneWay, Source={StaticResource Metal}}" Stretch="None"/>
+                                    <TextBlock>Metal</TextBlock>
+                                </StackPanel>
+                            </ToggleButton.Content>
+                        </ToggleButton>
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock>Sort by:</TextBlock>
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox ItemsSource="{Binding Source={StaticResource SortKindValues}}"
+                                  SelectedItem="{Binding Sort, Source={StaticResource DyeSet}}"/>
+                                <local:MyColorPicker SelectedColor="{Binding ReferenceColor, Source={StaticResource DyeSet}}"
+                                             Visibility="{Binding NeedColorPicker, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource DyeSet}}" UsingAlphaChannel="False" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StatusBarItem>
+                    <StatusBarItem HorizontalAlignment="Right">
+                        <Button Style="{Binding Mode=OneWay, Source={StaticResource TopBarButtonStyle}}" Click="Button_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Vertical">
+                                    <Image Source="{Binding Mode=OneWay, Source={StaticResource About}}" Stretch="None"/>
+                                    <TextBlock>About</TextBlock>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </StatusBarItem>
+                </StatusBar>
+
+                <!-- Status bar -->
+                <StatusBar DockPanel.Dock="Bottom" VerticalAlignment="Top">
+                    <StatusBarItem>
+                        <TextBlock DataContext="{x:Static controller:WorkStatus.Instance}" Text="{Binding Status}"/>
+                    </StatusBarItem>
+                </StatusBar>
+
+                <!-- Right details -->
+                <Border DockPanel.Dock="Right" Padding="15,0">
+                    <local:DyeDetails DataContext="{Binding SelectedItem, ElementName=DyeList}"
+                                        Width="Auto"/>
+                </Border>
+
+                <!-- Center part -->
+                <ListBox Name="DyeList"
+                            ItemsSource="{Binding SortedDyes, Source={StaticResource DyeSet}}"
+                            ItemsPanel="{StaticResource ColorDisplayPanelTemplate}"
+                            Style="{StaticResource ColorDisplayStyle}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewKeyDown="DyeList_PreviewKeyDown" SelectedItem="{Binding CurrentlySelectedDye, Mode=TwoWay, Source={StaticResource DyeSet}}" SelectionChanged="DyeList_SelectionChanged">
+                </ListBox>
+            </DockPanel>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock>Color harmonizer</TextBlock>
+            </TabItem.Header>
+            <!-- Color controls -->
+            <Grid x:Name="ParentGrid"
+                    HorizontalAlignment="Center" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid Name="HSVWheel"
+                            HorizontalAlignment="Right"
+                            Height="{Binding ActualHeight, ElementName=ParentGrid, Mode=OneWay}"
+                            Width="{Binding ActualHeight, ElementName=ParentGrid, Mode=OneWay}"
+                            PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown"
+                            PreviewMouseLeftButtonUp="Grid_PreviewMouseLeftButtonUp"
+                            PreviewMouseMove="Grid_PreviewMouseMove">
+                        <Canvas Background="Transparent"
+                                Width="{Binding ActualWidth, ElementName=HSVWheel, Mode=OneWay, Converter={con:ExpressionConverter {}{0} * 8 / 9}}"
+                                Height="{Binding ActualHeight, ElementName=HSVWheel, Mode=OneWay, Converter={con:ExpressionConverter {}{0} * 8 / 9}}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Canvas.Effect>
+                                <effects:HSVWheel Value="{Binding Value, Source={StaticResource Arrows}}"/>
+                            </Canvas.Effect>
+                        </Canvas>
+                        <local:ArrowControl DataContext="{Binding Arrow0, Mode=OneWay, Source={StaticResource Arrows}}"
+                                            Width="{Binding ActualWidth, ElementName=HSVWheel, Mode=OneWay}"
+                                            Height="{Binding ActualHeight, ElementName=HSVWheel, Mode=OneWay}"
+                                            HorizontalAlignment="Right"
+                                            x:Name="ArrowControl0" IsHitTestVisible="False"/>
+                        <local:ArrowControl DataContext="{Binding Arrow1, Mode=OneWay, Source={StaticResource Arrows}}"
+                                            Width="{Binding ActualWidth, ElementName=HSVWheel, Mode=OneWay}"
+                                            Height="{Binding ActualHeight, ElementName=HSVWheel, Mode=OneWay}"
+                                            HorizontalAlignment="Right"
+                                            x:Name="ArrowControl1" IsHitTestVisible="False"/>
+                        <local:ArrowControl DataContext="{Binding Arrow2, Mode=OneWay, Source={StaticResource Arrows}}"
+                                            Width="{Binding ActualWidth, ElementName=HSVWheel, Mode=OneWay}"
+                                            Height="{Binding ActualHeight, ElementName=HSVWheel, Mode=OneWay}"
+                                            HorizontalAlignment="Right"
+                                            x:Name="ArrowControl2" IsHitTestVisible="False"/>
+                        <local:ArrowControl DataContext="{Binding Arrow3, Mode=OneWay, Source={StaticResource Arrows}}"
+                                            Width="{Binding ActualWidth, ElementName=HSVWheel, Mode=OneWay}"
+                                            Height="{Binding ActualHeight, ElementName=HSVWheel, Mode=OneWay}"
+                                            HorizontalAlignment="Right"
+                                            x:Name="ArrowControl3" IsHitTestVisible="False"/>
+                        <local:ArrowControl DataContext="{Binding Arrow4, Mode=OneWay, Source={StaticResource Arrows}}"
+                                            Width="{Binding ActualWidth, ElementName=HSVWheel, Mode=OneWay}"
+                                            Height="{Binding ActualHeight, ElementName=HSVWheel, Mode=OneWay}"
+                                            HorizontalAlignment="Right"
+                                            x:Name="ArrowControl4" IsHitTestVisible="False"/>
+                    </Grid>
+                </Grid>
+                <!-- Value slider -->
+                <Slider Grid.Column="1" Orientation="Vertical" Maximum="1" LargeChange="0.1" SmallChange="0.01" Value="{Binding Value, Source={StaticResource Arrows}}"/>
+                <!-- Other controls -->
+                <StackPanel Grid.Column="2" Orientation="Vertical">
+                    <!-- Settings -->
+                    <StackPanel Orientation="Horizontal" Height="35">
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,5,0">Model:</TextBlock>
+                        <ComboBox ItemsSource="{Binding Mode=OneWay}" SelectedItem="{Binding ColorSystemKind, Source={StaticResource Arrows}}" Height="25"/>
+                    </StackPanel>
+                    <local:ColorInfo DataContext="{Binding Arrow0, Mode=OneWay, Source={StaticResource Arrows}}" SearchColorCommand="{Binding SearchColor, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                    <local:ColorInfo DataContext="{Binding Arrow1, Mode=OneWay, Source={StaticResource Arrows}}" SearchColorCommand="{Binding SearchColor, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                    <local:ColorInfo DataContext="{Binding Arrow2, Mode=OneWay, Source={StaticResource Arrows}}" SearchColorCommand="{Binding SearchColor, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                    <local:ColorInfo DataContext="{Binding Arrow3, Mode=OneWay, Source={StaticResource Arrows}}" SearchColorCommand="{Binding SearchColor, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                    <local:ColorInfo DataContext="{Binding Arrow4, Mode=OneWay, Source={StaticResource Arrows}}" SearchColorCommand="{Binding SearchColor, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>

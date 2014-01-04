@@ -1,0 +1,21 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ColorWars.View" x:Class="ColorWars.View.AboutWindow"
+        Title="AboutWindow" Height="300" Width="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="63*"/>
+            <ColumnDefinition Width="83*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1">
+            <TextBlock TextWrapping="Wrap" Text="Color Wars" FontSize="18" FontWeight="Bold"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding Version, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AboutWindow}}}"/>
+            <TextBlock Height="23" TextWrapping="Wrap" Text="Coded by Mattia Belletti" Margin="0,20,0,0"/>
+            <!-- TODO -->
+            <TextBlock Text="Contributions:"/>
+            <TextBlock Text="Thanks to:"/>
+        </StackPanel>
+
+    </Grid>
+</Window>
