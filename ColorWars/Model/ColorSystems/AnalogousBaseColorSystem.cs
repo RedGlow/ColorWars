@@ -57,7 +57,12 @@ namespace ColorWars.Model.ColorSystems
                 {
                     // lateral color has been moved: change the angle accordingly and compute the other lateral.
                     int factor = getFactor(colorNumber);
-                    hueAngle = Helper.NormalizeAngle(colors[0].H - value.H) / factor;
+                    var diffAngle = value.H - colors[0].H;
+                    var normalizedDiffAngle = diffAngle > 180 ? -(360 - diffAngle) : diffAngle;
+                    hueAngle = normalizedDiffAngle / factor;
+                    Console.WriteLine(string.Format(
+                        "factor: {5}; base: {0:0}; this: {1:0}; diff color: {2:0}; normalized: {3:0}; new hue: {4:0}",
+                        colors[0].H, value.H, diffAngle, normalizedDiffAngle, hueAngle, factor));
                     colors[0] = new ColorHSV(colors[0].H, value.S, value.V);
                     computeLaterals();
                 }
@@ -66,7 +71,8 @@ namespace ColorWars.Model.ColorSystems
 
         private static int getFactor(int colorNumber)
         {
-            int factor = (colorNumber % 2 == 0 ? 1 : -1) * (colorNumber + 1) / 2;
+            int df = (colorNumber + 1) / 2;
+            int factor = (colorNumber % 2 == 0 ? -1 : 1) * df;
             return factor;
         }
 
@@ -77,7 +83,7 @@ namespace ColorWars.Model.ColorSystems
         {
             var c = colors[0];
             for (int i = 1; i < Count; i++)
-                colors[i] = new ColorHSV(Helper.NormalizeAngle(c.H - getFactor(i) * hueAngle), c.S, c.V);
+                colors[i] = new ColorHSV(Helper.NormalizeAngle(getFactor(i) * hueAngle + c.H), c.S, c.V);
         }
     }
 }
