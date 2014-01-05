@@ -20,23 +20,30 @@ namespace ColorWars.Controller.Prices
         /// <summary>
         /// Name of the dye.
         /// </summary>
-        public string Name { get { return result.name; } }
+        public string Name { get { return result == null ? null : result.name; } }
+
+        /// <summary>
+        /// Whether this price element is valid (the dye wasn't a starter one).
+        /// </summary>
+        public bool Valid { get { return result != null; } }
 
         /// <summary>
         /// Rarity level of this dye.
         /// </summary>
-        public Rarity Rarity
+        public RarityKind? Rarity
         {
             get
             {
+                if (result == null)
+                    return null;
                 switch (result.rarity)
                 {
                     case 4:
-                        return Prices.Rarity.Rare;
+                        return Prices.RarityKind.Rare;
                     case 3:
-                        return Prices.Rarity.Masterwork;
+                        return Prices.RarityKind.Masterwork;
                     case 2:
-                        return Prices.Rarity.Fine;
+                        return Prices.RarityKind.Fine;
                     default:
                         throw new InvalidOperationException("Unknown rarity level " + result.rarity.ToString());
                 }
@@ -46,37 +53,37 @@ namespace ColorWars.Controller.Prices
         /// <summary>
         /// Whether this dye is of rarity "rare".
         /// </summary>
-        public bool IsRare { get { return Rarity == Rarity.Rare;  } }
+        public bool IsRare { get { return Rarity != null && Rarity.Value == RarityKind.Rare; } }
 
         /// <summary>
         /// Whether this dye is of rarity "masterwork".
         /// </summary>
-        public bool IsMasterwork { get { return Rarity == Rarity.Masterwork; } }
+        public bool IsMasterwork { get { return Rarity != null && Rarity.Value == RarityKind.Masterwork; } }
 
         /// <summary>
         /// Whether this dye is of rarity "fine".
         /// </summary>
-        public bool IsFine { get { return Rarity == Rarity.Fine; } }
+        public bool IsFine { get { return Rarity != null && Rarity.Value == RarityKind.Fine; } }
 
         /// <summary>
         /// Total (order) price of the dye in coppers.
         /// </summary>
-        public int TotalCopperPrice { get { return result.max_offer_unit_price; } }
+        public int? TotalCopperPrice { get { return result == null ? null : (int?)result.max_offer_unit_price; } }
 
         /// <summary>
         /// Gold part of the (order) price of the dye.
         /// </summary>
-        public int GoldPrice { get { return TotalCopperPrice / 10000; } }
+        public int? GoldPrice { get { return result == null ? null : TotalCopperPrice / 10000; } }
 
         /// <summary>
         /// Silver part of the (order) price of the dye.
         /// </summary>
-        public int SilverPrice { get { return (TotalCopperPrice / 100) % 100; } }
+        public int? SilverPrice { get { return result == null ? null : (TotalCopperPrice / 100) % 100; } }
 
         /// <summary>
         /// Copper part of the (order) price of the dye.
         /// </summary>
-        public int CopperPrice { get { return TotalCopperPrice % 100; } }
+        public int? CopperPrice { get { return result == null ? null : TotalCopperPrice % 100; } }
 
         /// <summary>
         /// Create a new Price object.

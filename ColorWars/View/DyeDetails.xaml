@@ -65,19 +65,19 @@
             <TextBlock Width="100" VerticalAlignment="Center"><Run Text="Metal"/></TextBlock>
             <ContentControl Template="{StaticResource ColorControlTemplate}" DataContext="{Binding MetalColor}"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Margin="0,0,5,0">Rarity:</TextBlock>
-            <StackPanel Visibility="{Binding PriceLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Foreground="#FFC09000" Visibility="{Binding Price.IsRare, Converter={StaticResource BooleanToVisibilityConverter}}">Rare</TextBlock>
-                <TextBlock Foreground="#FF2DC50E" Visibility="{Binding Price.IsMasterwork, Converter={StaticResource BooleanToVisibilityConverter}}">Masterwork</TextBlock>
-                <TextBlock Foreground="#FF4F9DFE" Visibility="{Binding Price.IsFine, Converter={StaticResource BooleanToVisibilityConverter}}">Fine</TextBlock>
+        <TextBlock Visibility="{Binding LoadingPrice, Converter={StaticResource BooleanToVisibilityConverter}}">Loading data...</TextBlock>
+        <TextBlock Visibility="{Binding InvalidPriceLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">No data found (perhaps a starter one?)</TextBlock>
+        <StackPanel Orientation="Vertical" Visibility="{Binding ValidPriceLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="0,0,5,0">Rarity:</TextBlock>
+                <StackPanel>
+                    <TextBlock Foreground="#FFC09000" Visibility="{Binding Price.IsRare, Converter={StaticResource BooleanToVisibilityConverter}}">Rare</TextBlock>
+                    <TextBlock Foreground="#FF2DC50E" Visibility="{Binding Price.IsMasterwork, Converter={StaticResource BooleanToVisibilityConverter}}">Masterwork</TextBlock>
+                    <TextBlock Foreground="#FF4F9DFE" Visibility="{Binding Price.IsFine, Converter={StaticResource BooleanToVisibilityConverter}}">Fine</TextBlock>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock>Order price:</TextBlock>
-            <TextBlock Visibility="{Binding LoadingPrice, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="5,0,0,0">Loading...</TextBlock>
-            <StackPanel Orientation="Horizontal" Margin="5,0,0,0"
-                        Visibility="{Binding PriceLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>Order price:</TextBlock>
                 <TextBlock Text="{Binding Price.GoldPrice}"/>
                 <Image Style="{Binding Mode=OneWay, Source={StaticResource GoldPartImageStyle}}">
                     <Image.Source>

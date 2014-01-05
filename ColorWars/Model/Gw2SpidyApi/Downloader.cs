@@ -49,8 +49,10 @@ namespace ColorWars.Model.Gw2SpidyApi
                 using (var wc = new WebClient())
                     downloadedJson = wc.DownloadString(string.Format(searchUrl, name));
                 var results = JsonConvert.DeserializeObject<Results>(downloadedJson);
-                // TODO: base dyes, dyes with no offers give no results
-                return results.results[0];
+                if (results.results.Length > 0)
+                    return results.results[0];
+                else
+                    return null;
             }, CancellationToken.None, TaskCreationOptions.LongRunning, throttledTaskScheduler);
         }
     }

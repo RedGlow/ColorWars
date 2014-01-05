@@ -9,7 +9,7 @@ namespace ColorWars.Controller.Prices
     /// <summary>
     /// Possible dye rarities
     /// </summary>
-    public enum Rarity
+    public enum RarityKind
     {
         /// <summary>
         /// Fine rarity.

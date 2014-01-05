@@ -77,7 +77,8 @@ namespace ColorWars.Controller.Colors
                 {
                     pc(this, new PropertyChangedEventArgs("Price"));
                     pc(this, new PropertyChangedEventArgs("LoadingPrice"));
-                    pc(this, new PropertyChangedEventArgs("PriceLoaded"));
+                    pc(this, new PropertyChangedEventArgs("ValidPriceLoaded"));
+                    pc(this, new PropertyChangedEventArgs("InvalidPriceLoaded"));
                 }
             }
         }
@@ -89,9 +90,14 @@ namespace ColorWars.Controller.Colors
         public bool LoadingPrice { get { return price == null; } }
 
         /// <summary>
-        /// Whether the system has already loaded the dye price.
+        /// Whether the system has already loaded the dye data, and found it.
         /// </summary>
-        public bool PriceLoaded { get { return price != null; } }
+        public bool ValidPriceLoaded { get { return price != null && price.Valid; } }
+
+        /// <summary>
+        /// Whether the system has already tried to load the dye data, but it didn't find it.
+        /// </summary>
+        public bool InvalidPriceLoaded { get { return price != null && !price.Valid; } }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -176,7 +176,7 @@
                 <!-- Right details -->
                 <Border DockPanel.Dock="Right" Padding="15,0">
                     <local:DyeDetails DataContext="{Binding SelectedItem, ElementName=DyeList}"
-                                        Width="Auto"/>
+                                      Width="Auto"/>
                 </Border>
 
                 <!-- Center part -->
