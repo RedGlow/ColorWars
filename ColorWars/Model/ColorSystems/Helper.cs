@@ -17,7 +17,7 @@ namespace ColorWars.Model.ColorSystems
         /// <param name="angle">The angle to normalize.</param>
         /// <returns>The normalized angle.</returns>
         public static double NormalizeAngle(double angle) {
-            while(angle < 360)
+            while(angle < 0)
                 angle += 360;
             while(angle > 360)
                 angle -= 360;
