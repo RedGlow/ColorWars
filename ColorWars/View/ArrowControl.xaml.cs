@@ -58,8 +58,6 @@ namespace ColorWars.View
             var circleRadius = colorCircle.Width / 2;
             var clickDistanceFromCenter = (clickPosition - circleCenter).Length;
             var nearEnough = clickDistanceFromCenter < circleRadius;
-            Console.WriteLine("Clicked at (circle) position {0}; center is at {1} and radius is {2}: near enough? {3}",
-                clickPosition, circleCenter, circleRadius, nearEnough);
 
             if (!nearEnough)
                 return;
