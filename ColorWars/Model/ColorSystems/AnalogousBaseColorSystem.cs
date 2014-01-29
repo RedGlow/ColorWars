@@ -60,9 +60,6 @@ namespace ColorWars.Model.ColorSystems
                     var diffAngle = value.H - colors[0].H;
                     var normalizedDiffAngle = diffAngle > 180 ? -(360 - diffAngle) : diffAngle;
                     hueAngle = normalizedDiffAngle / factor;
-                    Console.WriteLine(string.Format(
-                        "factor: {5}; base: {0:0}; this: {1:0}; diff color: {2:0}; normalized: {3:0}; new hue: {4:0}",
-                        colors[0].H, value.H, diffAngle, normalizedDiffAngle, hueAngle, factor));
                     colors[0] = new ColorHSV(colors[0].H, value.S, value.V);
                     computeLaterals();
                 }
