@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{413DA6DF-0488-4FD1-8A37-384958A13053}</ProjectGuid>
+    <ProjectGuid>{92F74E5A-CF68-46DF-95BB-CFF0DDC2CAB7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Installer</RootNamespace>
-    <AssemblyName>Installer</AssemblyName>
+    <RootNamespace>NSISInstaller</RootNamespace>
+    <AssemblyName>NSISInstaller</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,19 +36,12 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Installer.wxs">
-      <SubType>Designer</SubType>
-    </Content>
+    <None Include="DotNetChecker.nsh" />
+    <None Include="Installer.nsi" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>DEL "$(ProjectDir)$(OutDir)Installer.dll"
-DEL "$(ProjectDir)$(OutDir)Installer.wixobj"
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\candle.exe" -out "$(ProjectDir)$(OutDir)Installer.wixobj" "$(ProjectDir)Installer.wxs"
-DEL "$(ProjectDir)$(OutDir)Installer.msi"
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\light.exe" -b compiled="$(SolutionDir)ColorWars\bin\Release" -out "$(ProjectDir)$(OutDir)Installer.msi" "$(ProjectDir)$(OutDir)Installer.wixobj"</PostBuildEvent>
+    <PostBuildEvent>"c:\Program Files (x86)\NSIS\Bin\makensis.exe" "$(ProjectDir)Installer.nsi"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
