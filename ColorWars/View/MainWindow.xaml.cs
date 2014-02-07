@@ -32,6 +32,12 @@ namespace ColorWars.View
             SearchColor = new SearchColorCommand(this);
         }
 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            clipboardWatcher.DataContext = new ClipboardManager(this);
+            base.OnSourceInitialized(e);
+        }
+
         private TextSearchWindow textSearchWindow;
 
         protected override void OnClosed(EventArgs e)

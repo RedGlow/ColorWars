@@ -12,6 +12,9 @@
         
         <!-- The text searcher controller -->
         <controller:TextSearcher x:Key="TextSearcher"/>
+        
+        <!-- ClipboardManager for the ClipboardWatcher -->
+        <controller:ClipboardManager x:Key="ClipboardManager"/>
 
         <!-- Images -->
         <BitmapImage x:Key="Cloth" UriSource="View/Images/cloth.png"/>

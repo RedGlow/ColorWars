@@ -262,5 +262,14 @@
                 </StackPanel>
             </Grid>
         </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock>Clipboard</TextBlock>
+            </TabItem.Header>
+            <local:ClipboardWatcher
+                x:Name="clipboardWatcher"
+                Command="{Binding CopyToHarmonizer, Mode=OneWay}"
+                CommandParameter="{Binding Mode=OneWay, Source={StaticResource Arrows}}"/>
+        </TabItem>
     </TabControl>
 </Window>

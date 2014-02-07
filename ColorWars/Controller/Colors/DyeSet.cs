@@ -145,6 +145,7 @@ namespace ColorWars.Controller.Colors
         // Using a DependencyProperty as the backing store for CurrentlySelectedDye.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CurrentlySelectedDyeProperty =
             DependencyProperty.Register("CurrentlySelectedDye", typeof(Dye), typeof(DyeSet), new PropertyMetadata(null));
+        
 
         
         /// <summary>
@@ -163,9 +164,18 @@ namespace ColorWars.Controller.Colors
             // create a new view on that collection
             SortedDyes = CollectionViewSource.GetDefaultView(Dyes);
 
-            // listen to changed to the currently searched color
+            // listen to changes to the currently searched color
             var dpd = DependencyPropertyDescriptor.FromProperty(TextSearcher.CurrentlySearchedStringProperty, typeof(TextSearcher));
-            dpd.AddValueChanged(App.Current.Resources["TextSearcher"], new EventHandler(currentlySearchTextChanged));
+            try
+            {
+                dpd.AddValueChanged(App.Current.Resources["TextSearcher"], new EventHandler(currentlySearchTextChanged));
+            }
+            catch (Exception)
+            {
+                // this is horrible, but the call in design mode on App.xml raises error, I don't know which error,
+                // there's no way to know, and in this context it's impossible to determine if we are in
+                // design mode because, hey, 2014, why should you be able to recognize such a simple thing?
+            }
 
             // start the download of the dyes
             var downloader = new Model.Gw2api.Downloader();

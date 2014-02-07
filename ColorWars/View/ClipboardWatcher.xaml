@@ -1,0 +1,129 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:con="http://schemas.kent.boogaart.com/converters" x:Name="myControl" x:Class="ColorWars.View.ClipboardWatcher" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:inp="clr-namespace:System.Windows.Input;assembly=PresentationCore"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="700">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <Binding Mode="OneWay" Source="{StaticResource ClipboardManager}"/>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="124*"/>
+            <ColumnDefinition Width="51*"/>
+        </Grid.ColumnDefinitions>
+        <!--<ScrollViewer x:Name="clipboardImagePanel"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      util:ScrollViewerBinding.VerticalOffset="{Binding VerticalOffset}"
+                      util:ScrollViewerBinding.HorizontalOffset="{Binding HorizontalOffset}">-->
+        <Grid x:Name="clipboardImagePanel">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Canvas x:Name="imageContainer" ClipToBounds="True" Margin="{Binding OffsetMargin, Mode=OneWay}">
+                <Grid x:Name="clipboardImageGrid" Margin="0">
+                    <Image x:Name="clipboardImage"
+                           Source="{Binding Image}"
+                           Stretch="None"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           Cursor="{Binding ImageCursor, ElementName=myControl}">
+                        <Image.LayoutTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="{Binding ZoomFactor}" ScaleY="{Binding ZoomFactor}"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.LayoutTransform>
+                    </Image>
+                    <Canvas
+					    Width="{Binding ActualWidth, ElementName=clipboardImage, Mode=OneWay}"
+					    Height="{Binding ActualHeight, ElementName=clipboardImage, Mode=OneWay}"
+					    HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="1" ClipToBounds="True">
+                        <Ellipse
+						    Canvas.Left="{Binding PickerTopLeftCornerPosition.X}"
+						    Canvas.Top="{Binding PickerTopLeftCornerPosition.Y}"
+						    Width="{Binding PickerDiameter}"
+						    Height="{Binding PickerDiameter}"
+						    Visibility="{Binding IsPickerVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+						    Stroke="Black"
+                            />
+                    </Canvas>
+                </Grid>
+            </Canvas>
+            <ScrollBar x:Name="verticalScrollbar" Grid.Column="1" Orientation="Vertical"
+                       Value="{Binding VerticalOffset}">
+                <!-- It would be just imageContainer.ActualHeight, but it considers the negative
+                margin of contained elements too (why?!), so I must remove it; moreover, transforms
+                are not considered and I must factor them in -->
+                <ScrollBar.ViewportSize>
+                    <MultiBinding Converter="{con:ExpressionConverter {}{0} - {1}}">
+                        <Binding ElementName="imageContainer" Mode="OneWay" Path="ActualHeight"/>
+                        <Binding Mode="OneWay" Path="VerticalOffset"/>
+                    </MultiBinding>
+                </ScrollBar.ViewportSize>
+                <ScrollBar.Maximum>
+                    <!-- It would be just Image.Height, but it considers the negative
+                    margin of contained elements too (why?!), so I must remove it; moreover, transforms
+                    are not considered and I must factor them in -->
+                    <MultiBinding Converter="{con:ExpressionConverter {}{0} * {3} - {1} + {2}}">
+                        <Binding Mode="OneWay" Path="Image.Height"/>
+                        <Binding ElementName="imageContainer" Mode="OneWay" Path="ActualHeight"/>
+                        <Binding Mode="OneWay" Path="VerticalOffset"/>
+                        <Binding Mode="OneWay" Path="ZoomFactor"/>
+                    </MultiBinding>
+                </ScrollBar.Maximum>
+            </ScrollBar>
+            <ScrollBar x:Name="horizontalScrollbar" Grid.Row="1" Orientation="Horizontal"
+                       Value="{Binding HorizontalOffset}">
+                <ScrollBar.ViewportSize>
+                    <MultiBinding Converter="{con:ExpressionConverter {}{0} - {1}}">
+                        <Binding ElementName="imageContainer" Mode="OneWay" Path="ActualWidth"/>
+                        <Binding Mode="OneWay" Path="HorizontalOffset"/>
+                    </MultiBinding>
+                </ScrollBar.ViewportSize>
+                <ScrollBar.Maximum>
+                    <MultiBinding Converter="{con:ExpressionConverter {}{0} * {3} - {1} + {2}}">
+                        <Binding Mode="OneWay" Path="Image.Width"/>
+                        <Binding ElementName="imageContainer" Mode="OneWay" Path="ActualWidth"/>
+                        <Binding Mode="OneWay" Path="HorizontalOffset"/>
+                        <Binding Mode="OneWay" Path="ZoomFactor"/>
+                    </MultiBinding>
+                </ScrollBar.Maximum>
+            </ScrollBar>
+        </Grid>
+        <!--</ScrollViewer>-->
+        <StackPanel Grid.Column="1" Margin="10">
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,10"><Run FontWeight="Bold" Text="Just click"/><Run Text=" to select the color under the picker."/></TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,10"><Run Text="Use "/><Run FontWeight="Bold" Text="Scroll Wheel"/><Run Text=" to change the size of the color picker."/></TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,10"><Run Text="Use "/><Run FontWeight="Bold" Text="Ctrl + Scroll Wheel"/><Run Text=" to zoom the image."/></TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,10"><Run FontWeight="Bold" Text="Click and drag"/><Run Text=" or use the scrollbars to move to a specific part of the image."/></TextBlock>
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Rectangle Width="50" Height="20" Margin="0,0,10,0">
+                    <Rectangle.Fill>
+                        <SolidColorBrush x:Name="boxColor" Color="{Binding PickerColor}"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Button Grid.Column="1" x:Name="copyToHarmonizerButton" Content="Copy to harmonizer" Margin="10,0,0,0"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

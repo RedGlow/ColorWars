@@ -108,6 +108,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controller\ClipboardManager.cs" />
     <Compile Include="Controller\ColorHarmonizer\Arrow.cs" />
     <Compile Include="Controller\ColorHarmonizer\Arrows.cs" />
     <Compile Include="Controller\ColorHarmonizer\IArrowColorSetter.cs" />
@@ -139,6 +140,9 @@
       <DependentUpon>ArrowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ArrowDraggingData.cs" />
+    <Compile Include="View\ClipboardWatcher.xaml.cs">
+      <DependentUpon>ClipboardWatcher.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ColorInfo.xaml.cs">
       <DependentUpon>ColorInfo.xaml</DependentUpon>
     </Compile>
@@ -158,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ArrowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ClipboardWatcher.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -244,6 +252,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Images\about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PropertyChangedSnippet.snippet" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
