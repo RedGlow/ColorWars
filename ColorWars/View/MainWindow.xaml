@@ -10,7 +10,7 @@
     xmlns:effects="clr-namespace:Effects;assembly=Effects"
     xmlns:con="http://schemas.kent.boogaart.com/converters"
     x:Class="ColorWars.View.MainWindow"
-    Title="Color Wars" Height="500" Width="800" WindowState="Maximized">
+    Title="Color Wars" Height="500" Width="800" WindowState="Maximized" Icon="Images/logo.ico">
     <Window.Resources>
         <converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

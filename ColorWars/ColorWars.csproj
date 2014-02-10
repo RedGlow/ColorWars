@@ -256,6 +256,9 @@
   <ItemGroup>
     <None Include="PropertyChangedSnippet.snippet" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\logo.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>rem "$(SolutionDir)lib\FxGeneratorCmd.exe" "$(ProjectDir)View\FxBuilder.xaml"</PreBuildEvent>
