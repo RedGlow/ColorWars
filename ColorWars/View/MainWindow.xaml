@@ -262,7 +262,7 @@
                 </StackPanel>
             </Grid>
         </TabItem>
-        <TabItem>
+        <TabItem x:Name="ClipboardTabItem">
             <TabItem.Header>
                 <TextBlock>Clipboard</TextBlock>
             </TabItem.Header>

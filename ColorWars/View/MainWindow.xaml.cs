@@ -34,8 +34,15 @@ namespace ColorWars.View
 
         protected override void OnSourceInitialized(EventArgs e)
         {
-            clipboardWatcher.DataContext = new ClipboardManager(this);
+            var cm = new ClipboardManager(this);
+            cm.ClipboardUpdated += cm_ClipboardUpdated;
+            clipboardWatcher.DataContext = cm;
             base.OnSourceInitialized(e);
+        }
+
+        void cm_ClipboardUpdated(object sender, EventArgs e)
+        {
+            MainTabControl.SelectedItem = ClipboardTabItem;
         }
 
         private TextSearchWindow textSearchWindow;

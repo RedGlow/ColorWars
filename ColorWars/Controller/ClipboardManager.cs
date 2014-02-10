@@ -289,6 +289,8 @@ namespace ColorWars.Controller
         private int width, height;
 
         private Window mainWindow;
+
+        public event EventHandler ClipboardUpdated;
         
 
 
@@ -302,6 +304,10 @@ namespace ColorWars.Controller
                     var img = getClipboardImage();
 
                     Image = img;
+
+                    var cu = ClipboardUpdated;
+                    if (cu != null)
+                        cu(this, new EventArgs());
                 }
             }
             else
