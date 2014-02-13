@@ -9,6 +9,7 @@
     xmlns:converters="clr-namespace:ColorWars.View.Converters"
     xmlns:effects="clr-namespace:Effects;assembly=Effects"
     xmlns:con="http://schemas.kent.boogaart.com/converters"
+    xmlns:pcore="clr-namespace:System.Windows;assembly=PresentationCore"
     x:Class="ColorWars.View.MainWindow"
     Title="Color Wars" Height="500" Width="800" WindowState="Maximized" Icon="Images/logo.ico">
     <Window.Resources>
@@ -23,7 +24,16 @@
             ObjectType="{x:Type sys:Enum}"
             x:Key="SortKindValues">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="ccolors:SortKind" />
+                <x:Type TypeName="ccolors:SortKind"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        
+        <!-- VisualizationStyle enum object data provider -->
+        <ObjectDataProvider MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}"
+                            x:Key="VisualizationStyleValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="ccolors:VisualizationStyle"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
@@ -46,8 +56,105 @@
             <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}, Mode=OneWay}"/>
         </DataTemplate>
 
-        <!-- Template for the elements inside the grid -->
-        <DataTemplate x:Name="ColorDisplayItemTemplate" DataType="{x:Type ccolors:Dye}">
+        <!-- Templates for the elements inside the grid -->
+        <DataTemplate x:Key="ColorDisplayExpandedItemTemplate" DataType="{x:Type ccolors:Dye}">
+            <DataTemplate.Resources>
+                <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                <converters:SimpleColorRGBConverter x:Key="SimpleColorRGBConverter"/>
+                <converters:RGBElementFloatToByteConverter x:Key="RGBElementFloatToByteConverter"/>
+                <converters:VerboseDisplayConverter x:Key="VerboseDisplayConverter"/>
+                <ControlTemplate x:Key="HorizontalColorControlTemplate">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="15"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Canvas Grid.RowSpan="3"
+                                Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                                Background="{Binding Converter={StaticResource SimpleColorRGBConverter}, Mode=OneWay}" Margin="0,0,10,0"/>
+                        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,5,0"><Run Text="R:"/></TextBlock>
+                            <TextBlock Width="20" Text="{Binding R, Converter={StaticResource RGBElementFloatToByteConverter}}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,5,0"><Run Text="G:"/></TextBlock>
+                            <TextBlock Width="20" Text="{Binding G, Converter={StaticResource RGBElementFloatToByteConverter}}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,5,0"><Run Text="B:"/></TextBlock>
+                            <TextBlock Width="20" Text="{Binding B, Converter={StaticResource RGBElementFloatToByteConverter}}"/>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+                <Style x:Key="GoldPartImageStyle" TargetType="{x:Type Image}">
+                    <Setter Property="Width" Value="12"/>
+                    <Setter Property="Margin" Value="3,0,5,0"/>
+                </Style>
+            </DataTemplate.Resources>
+            <Border BorderThickness="0,0,0,1" BorderBrush="Black">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" Width="300" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Name}" FontSize="22" Margin="0,0,0,5" HorizontalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
+                            <TextBlock Text="Code:" Margin="0,0,4,0"/>
+                            <TextBlock Text="{Binding Code}" FontWeight="Bold"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,15">
+                        <TextBlock Width="100" VerticalAlignment="Center" Text="Cloth"/>
+                        <ContentControl Template="{StaticResource HorizontalColorControlTemplate}" DataContext="{Binding ClothColor}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,15">
+                        <TextBlock Width="100" VerticalAlignment="Center" Text="Leather"/>
+                        <ContentControl Template="{StaticResource HorizontalColorControlTemplate}" DataContext="{Binding LeatherColor}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,15">
+                        <TextBlock Width="100" VerticalAlignment="Center" Text="Metal"/>
+                        <ContentControl Template="{StaticResource HorizontalColorControlTemplate}" DataContext="{Binding MetalColor}"/>
+                    </StackPanel>
+                    <TextBlock Visibility="{Binding LoadingPrice, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">Loading data...</TextBlock>
+                    <TextBlock Visibility="{Binding InvalidPriceLoaded, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">No data found (perhaps a starter one?)</TextBlock>
+                    <StackPanel Orientation="Vertical" Visibility="{Binding ValidPriceLoaded, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,5,0">Rarity:</TextBlock>
+                            <StackPanel>
+                                <TextBlock Foreground="#FFC09000" Visibility="{Binding Price.IsRare, Converter={StaticResource BooleanToVisibilityConverter}}">Rare</TextBlock>
+                                <TextBlock Foreground="#FF2DC50E" Visibility="{Binding Price.IsMasterwork, Converter={StaticResource BooleanToVisibilityConverter}}">Masterwork</TextBlock>
+                                <TextBlock Foreground="#FF4F9DFE" Visibility="{Binding Price.IsFine, Converter={StaticResource BooleanToVisibilityConverter}}">Fine</TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>Order price:</TextBlock>
+                            <TextBlock Text="{Binding Price.GoldPrice}"/>
+                            <Image Style="{Binding Mode=OneWay, Source={StaticResource GoldPartImageStyle}}">
+                                <Image.Source>
+                                    <BitmapImage UriSource="http://wiki.guildwars2.com/images/d/d1/Gold_coin.png"/>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock Text="{Binding Price.SilverPrice}"/>
+                            <Image Style="{Binding Mode=OneWay, Source={StaticResource GoldPartImageStyle}}">
+                                <Image.Source>
+                                    <BitmapImage UriSource="http://wiki.guildwars2.com/images/3/3c/Silver_coin.png"/>
+                                </Image.Source>
+                            </Image>
+                            <TextBlock Text="{Binding Price.CopperPrice}"/>
+                            <Image Style="{Binding Mode=OneWay, Source={StaticResource GoldPartImageStyle}}">
+                                <Image.Source>
+                                    <BitmapImage UriSource="http://wiki.guildwars2.com/images/e/eb/Copper_coin.png"/>
+                                </Image.Source>
+                            </Image>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ColorDisplayCompressedItemTemplate" DataType="{x:Type ccolors:Dye}">
             <Border Width="150">
                 <Grid Margin="3">
                     <Grid.RowDefinitions>
@@ -68,6 +175,18 @@
             </Border>
         </DataTemplate>
 
+        <DataTemplate x:Key="ColorDisplayItemTemplate" DataType="{x:Type ccolors:Dye}">
+            <ContentPresenter Content="{Binding}" Name="contentPresenter"/>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding CompressedVisualizationStyle, Source={StaticResource DyeSet}}" Value="Compressed">
+                    <Setter TargetName="contentPresenter" Property="ContentTemplate" Value="{StaticResource ColorDisplayCompressedItemTemplate}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding CompressedVisualizationStyle, Source={StaticResource DyeSet}}" Value="Expanded">
+                    <Setter TargetName="contentPresenter" Property="ContentTemplate" Value="{StaticResource ColorDisplayExpandedItemTemplate}"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
         <!-- Style for buttons on top bar -->
         <Style x:Key="TopBarToggleButtonStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Width" Value="60"/>
@@ -77,13 +196,26 @@
             <Setter Property="Height" Value="50"/>
         </Style>
 
-        <!-- Template for the panel containing all the colors -->
-        <ItemsPanelTemplate x:Key="ColorDisplayPanelTemplate">
+        <!-- Template for the panel containing all the colors: compressed style -->
+        <ItemsPanelTemplate x:Key="ColorDisplayCompressedPanelTemplate">
             <WrapPanel/>
         </ItemsPanelTemplate>
-
-        <!-- Style for making selected items visible even when unfocused -->
+        
+        <!-- Template for the panel containing all the colors: expanded style -->
+        <ItemsPanelTemplate x:Key="ColorDisplayExpandedPanelTemplate">
+            <VirtualizingStackPanel Orientation="Vertical"/>
+        </ItemsPanelTemplate>
+        
+        <!-- Style for making selected items visible even when unfocused, and choosing which template to use -->
         <Style x:Key="ColorDisplayStyle" TargetType="{x:Type ListBox}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CompressedVisualizationStyle, Source={StaticResource DyeSet}}" Value="Compressed">
+                    <Setter Property="ItemsPanel" Value="{StaticResource ColorDisplayCompressedPanelTemplate}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding CompressedVisualizationStyle, Source={StaticResource DyeSet}}" Value="Expanded">
+                    <Setter Property="ItemsPanel" Value="{StaticResource ColorDisplayExpandedPanelTemplate}"/>
+                </DataTrigger>
+            </Style.Triggers>
             <Style.Resources>
                 <!--SelectedItem with focus-->
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Black" Opacity=".8"/>
@@ -101,6 +233,13 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        
+        <!-- Visibility converter for the details right bar -->
+        <con:MapConverter x:Key="DetailsBarVisibilityConverter">
+            <con:Mapping From="{x:Static ccolors:VisualizationStyle.Compressed}" To="{x:Static pcore:Visibility.Visible}"/>
+            <con:Mapping From="{x:Static ccolors:VisualizationStyle.Expanded}" To="{x:Static pcore:Visibility.Collapsed}"/>
+        </con:MapConverter>
+        
     </Window.Resources>
     <TabControl x:Name="MainTabControl" DataContext="{Binding Source={StaticResource ColorSystemKind}}">
         <TabItem>
@@ -154,6 +293,13 @@
                             </StackPanel>
                         </StackPanel>
                     </StatusBarItem>
+                    <StatusBarItem>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock>Display:</TextBlock>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource VisualizationStyleValues}}"
+                                      SelectedItem="{Binding CompressedVisualizationStyle, Source={StaticResource DyeSet}}"/>
+                        </StackPanel>
+                    </StatusBarItem>
                     <StatusBarItem HorizontalAlignment="Right">
                         <Button Style="{Binding Mode=OneWay, Source={StaticResource TopBarButtonStyle}}" Click="Button_Click">
                             <Button.Content>
@@ -174,17 +320,20 @@
                 </StatusBar>
 
                 <!-- Right details -->
-                <Border DockPanel.Dock="Right" Padding="15,0">
+                <Border DockPanel.Dock="Right" Padding="15,0" Visibility="{Binding CompressedVisualizationStyle, Converter={StaticResource DetailsBarVisibilityConverter}, Source={StaticResource DyeSet}}">
                     <local:DyeDetails DataContext="{Binding SelectedItem, ElementName=DyeList}"
                                       Width="Auto"/>
                 </Border>
 
                 <!-- Center part -->
                 <ListBox Name="DyeList"
-                            ItemsSource="{Binding SortedDyes, Source={StaticResource DyeSet}}"
-                            ItemsPanel="{StaticResource ColorDisplayPanelTemplate}"
-                            Style="{StaticResource ColorDisplayStyle}"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewKeyDown="DyeList_PreviewKeyDown" SelectedItem="{Binding CurrentlySelectedDye, Mode=TwoWay, Source={StaticResource DyeSet}}" SelectionChanged="DyeList_SelectionChanged">
+                         ItemsSource="{Binding SortedDyes, Source={StaticResource DyeSet}}"
+                         ItemTemplate="{StaticResource ColorDisplayItemTemplate}"
+                         Style="{StaticResource ColorDisplayStyle}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         SelectedItem="{Binding CurrentlySelectedDye, Mode=TwoWay, Source={StaticResource DyeSet}}"
+                         PreviewKeyDown="DyeList_PreviewKeyDown"
+                         SelectionChanged="DyeList_SelectionChanged" Margin="0,0,0,-0.4">
                 </ListBox>
             </DockPanel>
         </TabItem>

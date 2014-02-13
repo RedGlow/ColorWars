@@ -114,6 +114,7 @@
     <Compile Include="Controller\ColorHarmonizer\IArrowColorSetter.cs" />
     <Compile Include="Controller\ColorHarmonizer\IArrowsColorSetter.cs" />
     <Compile Include="Controller\Colors\SortKind.cs" />
+    <Compile Include="Controller\Colors\VisualizationStyle.cs" />
     <Compile Include="Controller\Prices\FileObjectCache.cs" />
     <Compile Include="Controller\Prices\FileObjectCacheEntry.cs" />
     <Compile Include="Controller\Prices\FileObjectCacheIndex.cs" />

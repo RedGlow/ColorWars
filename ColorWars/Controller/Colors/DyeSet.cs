@@ -145,8 +145,24 @@ namespace ColorWars.Controller.Colors
         // Using a DependencyProperty as the backing store for CurrentlySelectedDye.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CurrentlySelectedDyeProperty =
             DependencyProperty.Register("CurrentlySelectedDye", typeof(Dye), typeof(DyeSet), new PropertyMetadata(null));
-        
 
+
+
+        /// <summary>
+        /// Whether the visualization style is compressed (color + name in a WrapPanel) or expanded (all
+        /// data in a StackingPanel).
+        /// </summary>
+        public VisualizationStyle CompressedVisualizationStyle
+        {
+            get { return (VisualizationStyle)GetValue(CompressedVisualizationStyleProperty); }
+            set { SetValue(CompressedVisualizationStyleProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CompressedVisualizationStyle.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CompressedVisualizationStyleProperty =
+            DependencyProperty.Register("CompressedVisualizationStyle", typeof(VisualizationStyle), typeof(DyeSet), new PropertyMetadata(VisualizationStyle.Compressed));
+
+        
         
         /// <summary>
         /// String displayed while downloading / converting the dye data
