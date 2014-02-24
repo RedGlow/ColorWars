@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorManagment", "ColorManagment\ColorManagment.csproj", "{732EBACF-9743-4C22-85F7-3284BA046C0C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSISInstaller", "NSISInstaller\NSISInstaller.csproj", "{92F74E5A-CF68-46DF-95BB-CFF0DDC2CAB7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6A8152C0-82EB-4704-865F-D682E4FC5438} = {6A8152C0-82EB-4704-865F-D682E4FC5438}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
